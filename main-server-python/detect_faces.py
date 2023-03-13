@@ -5,23 +5,28 @@ import os
 
 from pathlib import Path
 
-# Function to save the image
-def saveImage(image, prediction):
-    # Create a folder with the name as userName
-    Path("Captured/{}".format(prediction)).mkdir(parents=True, exist_ok=True)
 
-    # Save the images inside the previously created folder
-    currentTime = (
+def getCurrentTimeFormatted():
+    return (
         str(datetime.now()).split(" ")[0]
         + "-"
         + "-".join(str(datetime.now()).split(" ")[1].split(":")).split(".")[0]
     )
-    imagePath = "Captured/{}/{}.jpg".format(prediction, currentTime)
+
+
+# Function to save the image
+def saveImage(image, prediction):
+    # Create a folder with the name as userName
+    Path("static/Captured/{}".format(prediction)).mkdir(parents=True, exist_ok=True)
+
+    # Save the images inside the previously created folder
+    currentTime = getCurrentTimeFormatted()
+    imagePath = "static/Captured/{}/{}.jpg".format(prediction, currentTime)
     result = cv2.imwrite(
         imagePath,
         image,
     )
-    return (result, prediction, imagePath, str(datetime.now()))
+    return (result, prediction, imagePath, datetime.now())
 
 
 def startUp():
@@ -38,10 +43,9 @@ def tearDown(vc):
     cv2.destroyAllWindows()
 
 
-def detectFaces(vc):
+def detectFaces(vc, faceCascade):
 
     # Initialize the classifier
-    faceCascade = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
 
     # Call the trained model yml file to recognize faces
     recognizer = cv2.face.LBPHFaceRecognizer_create()
@@ -75,6 +79,7 @@ def detectFaces(vc):
             coords[1] : coords[1] + coords[3], coords[2] : coords[2] + coords[3]
         ]
 
+        # Check if there is a training file
         if trainingFile.is_file():
             id, _ = recognizer.predict(gray_img[y : y + h, x : x + w])
             result = saveImage(original_img, str(id))

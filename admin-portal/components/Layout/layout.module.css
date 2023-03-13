@@ -1,0 +1,7 @@
+@tailwind components;
+
+@layer components {
+    .main {
+        @apply grid place-items-center h-screen bg-greyish;
+    }
+}
