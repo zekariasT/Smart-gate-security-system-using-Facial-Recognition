@@ -1,0 +1,4 @@
+{
+    "typescript.format.enable": true,
+    "javascript.validate.enable": false
+}
